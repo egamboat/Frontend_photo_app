@@ -47,6 +47,9 @@ const IniciarSesion = ()=>{
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
+  const  contrasena = "";
+  const  usuario = "esaugt2001";
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

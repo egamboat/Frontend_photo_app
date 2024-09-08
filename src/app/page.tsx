@@ -3,17 +3,17 @@ import React from 'react';
 import Navbar from '@/components/navbar';
 
 const Home = () => {
-  const iniciarSesion = () => {
-    window.location.href = '/usuario/iniciar_sesion';
+  const subir_foto = () => {
+    window.location.href = '/foto/crear';
   };
 
   return (
     <>
       <Navbar></Navbar>
       <div>
-        <h1>Mi Aplicación Next.js</h1>
-        <button className="m-2 bg-blue border" onClick={iniciarSesion}>
-          Iniciar Sesión
+        <h1>Photo App!</h1>
+        <button className="m-2 bg-blue rounded border" onClick={subir_foto}>
+          Subir Foto
         </button>
       </div>
     </>
