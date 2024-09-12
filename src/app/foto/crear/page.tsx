@@ -4,27 +4,27 @@ import axios from "axios"; // Para realizar solicitudes HTTP
 
 const PageFoto = () => {
     // Usamos el estado para manejar los datos de la foto y la descripción
-    const [foto, setFoto] = useState(null); // Almacena la foto seleccionada
+    const [foto, setFoto] = useState(""); // Almacena la foto seleccionada
     const [description, setDescription] = useState(""); // Almacena la descripción de la foto
     const [visibilidad, setVisibilidad] = useState("public"); // Visibilidad de la foto
 
     // Función para manejar la subida de la foto
-    const handleFileChange = (e) => {
+    const handleFileChange = (e:any) => {
         setFoto(e.target.files[0]); // Almacenamos el archivo de la foto seleccionada
     };
 
     // Función para manejar el cambio de la descripción
-    const handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e:any) => {
         setDescription(e.target.value); // Almacenamos la descripción
     };
 
     // Función para manejar el cambio de visibilidad
-    const handleVisibilidadChange = (e) => {
+    const handleVisibilidadChange = (e:any) => {
         setVisibilidad(e.target.value); // Almacenamos la visibilidad (pública o privada)
     };
 
     // Función para enviar la foto al backend
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault(); // Prevenir que la página se recargue al hacer submit
 
         // Crear un objeto FormData para enviar la imagen y los datos
