@@ -1,12 +1,35 @@
 "use client";
 
 import React from "react";
+import axios from 'axios';
 
 const Navbar = () => {
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        window.location.href = 'usuario/iniciar_sesion';
+    const handleLogout = async () => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            try {
+                // Llamar a la API de logout en el backend
+                await axios.post('http://127.0.0.1:8000/usuario/logout/', {}, {
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    }
+                });
+
+                // Eliminar el token del localStorage
+                localStorage.removeItem('token');
+
+                // Redirigir a la página de inicio de sesión
+                window.location.href = '/usuario/iniciar_sesion';
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        } else {
+            // Redirigir si no hay token en localStorage
+            window.location.href = '/usuario/iniciar_sesion';
+        }
     };
+
     return (
         <>
             <nav className="bg-white border border-gray-200 dark:border-gray-700 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800 shadow">
@@ -63,14 +86,6 @@ const Navbar = () => {
                                     className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                                 >
                                     Services
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="#"
-                                    className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                                >
-                                    Pricing
                                 </a>
                             </li>
                             <li>

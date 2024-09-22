@@ -3,25 +3,29 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/navbar';
 import { Foto } from '@/interface/default';
 
+interface Headers {
+  [key: string]: string;
+}
+
 const Home: React.FC = () => {
   const subir_foto = () => {
     window.location.href = '/foto/crear';
   };
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Foto[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token); // Actualizamos el estado solo en el cliente
   }, []);
 
-  //Por hacer: que Navbar sea el que consulta si ha inciado sesión y el envíe un estado para realizar la comprobación
   useEffect(() => {
     async function fetchData() {
       const response = await fetch('http://127.0.0.1:8000/foto/api/fotos/');
       const result = await response.json();
       setData(result);
     }
+
     fetchData();
   }, []);
 
@@ -42,7 +46,11 @@ const Home: React.FC = () => {
             if (foto.visibilidad === 'public' || isAuthenticated) {
               return (
                 <div key={foto.id}>
-                  <img src={foto.foto_url} alt={foto.titulo} />
+                  <img
+                    src={foto.foto_url}
+                    alt={foto.titulo}
+                    className="w-64 h-64 object-cover rounded-lg"
+                  />
                   <h2>{foto.titulo}</h2>
                   <p><strong>Descripción:</strong> {foto.description}</p>
                   <p><strong>Visibilidad:</strong> {foto.visibilidad}</p>

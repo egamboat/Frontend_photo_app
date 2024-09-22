@@ -7,42 +7,47 @@ const PageFoto = () => {
     const [foto, setFoto] = useState(""); // Almacena la foto seleccionada
     const [description, setDescription] = useState(""); // Almacena la descripción de la foto
     const [visibilidad, setVisibilidad] = useState("public"); // Visibilidad de la foto
+    const [titulo, setTitulo] = useState(""); // Visibilidad de la foto
+    const [user, setUser] = useState("")
 
-    // Función para manejar la subida de la foto
-    const handleFileChange = (e:any) => {
-        setFoto(e.target.files[0]); // Almacenamos el archivo de la foto seleccionada
+    // const handleFileChange = (e:any) => {
+    //     setFoto(e.target.files[0]);
+    // };
+    const handleUrlTitulo = (e: any) => {
+        setTitulo(e.target.value);
+    }
+    const handleUrlFoto = (e: any) => {
+        setFoto(e.target.value);
+    }
+    const handleDescriptionChange = (e: any) => {
+        setDescription(e.target.value);
     };
 
-    // Función para manejar el cambio de la descripción
-    const handleDescriptionChange = (e:any) => {
-        setDescription(e.target.value); // Almacenamos la descripción
+    const handleVisibilidadChange = (e: any) => {
+        setVisibilidad(e.target.value);
+    };
+    const handleUser = (e: any) => {
+        setUser(e.target.value);
     };
 
-    // Función para manejar el cambio de visibilidad
-    const handleVisibilidadChange = (e:any) => {
-        setVisibilidad(e.target.value); // Almacenamos la visibilidad (pública o privada)
-    };
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
 
-    // Función para enviar la foto al backend
-    const handleSubmit = async (e:any) => {
-        e.preventDefault(); // Prevenir que la página se recargue al hacer submit
-
-        // Crear un objeto FormData para enviar la imagen y los datos
         const formData = new FormData();
-        formData.append("foto_url", foto); // Añadir la foto al FormData
-        formData.append("description", description); // Añadir la descripción
-        formData.append("visibilidad", visibilidad); // Añadir la visibilidad
+        formData.append("titulo", titulo);
+        formData.append("foto_url", foto);
+        formData.append("description", description);
+        formData.append("visibilidad", visibilidad);
+        formData.append("user", user);
 
         try {
-            // Enviar la solicitud POST al backend
-            const response = await axios.post("http://localhost:8000/foto/crear/", formData, {
+            const response = await axios.post("http://localhost:8000/foto/api/fotos/", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    //"Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
             });
 
-            // Mostrar un mensaje si la foto se sube correctamente
             alert("¡Foto subida exitosamente!");
         } catch (error) {
             console.error("Error al subir la foto:", error);
@@ -54,10 +59,14 @@ const PageFoto = () => {
         <>
             <h2>Subir una nueva foto</h2>
             <form onSubmit={handleSubmit}>
-                {/* Input para seleccionar la foto */}
+                <div>
+                    <label>Título:</label>
+                    <textarea value={titulo} onChange={handleUrlTitulo} placeholder="Título para la foto." required />
+                </div>
                 <div>
                     <label>Seleccionar foto:</label>
-                    <input type="file" accept="image/*" onChange={handleFileChange} required />
+                    {/* <input type="file" accept="image/*" onChange={handleFileChange} required /> */}
+                    <textarea value={foto} onChange={handleUrlFoto} placeholder="Coloca el enlace de la foto" required />
                 </div>
 
                 {/* Input para agregar la descripción */}
@@ -73,6 +82,10 @@ const PageFoto = () => {
                         <option value="public">Pública</option>
                         <option value="private">Privada</option>
                     </select>
+                </div>
+                <div>
+                    <label>Usuario:</label>
+                    <textarea value={user} onChange={handleUser} placeholder="Coloca el usuario..." required />
                 </div>
 
                 {/* Botón para enviar el formulario */}

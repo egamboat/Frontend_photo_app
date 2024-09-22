@@ -33,8 +33,12 @@ const loginUser = async ({ username, password }: LoginUserParams): Promise<Login
       const errorData = await response.json();
       throw new Error(`Error: ${errorData.error || 'Something went wrong'}`);
     }
-    console.log("Sesión Iniciada")
+
     const data: LoginResponse = await response.json();
+
+    localStorage.setItem('token', data.token);
+
+    console.log("Sesión Iniciada");
     return data;
   } catch (error) {
     console.log('Error logging in:', error);
@@ -42,14 +46,15 @@ const loginUser = async ({ username, password }: LoginUserParams): Promise<Login
   }
 };
 
-const IniciarSesion = ()=>{
+
+const IniciarSesion = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
-  const  contrasena = "";
-  const  usuario = "esaugt2001";
+
+  const contrasena = "";
+  const usuario = "esaugt2001";
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +71,7 @@ const IniciarSesion = ()=>{
     }
   };
 
-  const crearCuenta = ()=>{
+  const crearCuenta = () => {
     window.location.href = '/usuario/registrarse';
   }
   return (
