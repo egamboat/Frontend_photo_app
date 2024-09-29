@@ -75,38 +75,76 @@ const IniciarSesion = () => {
     window.location.href = '/usuario/registrarse';
   }
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <label className='m-2 border'>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <label className='m-2 border'>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <button className='m-4 border font-bold' type="submit">Login</button>
-      </form>
-      {error && <p>Error: {error}</p>}
-      {success && <p>{success}</p>}
-      <div>
-        <p>¿No tienes una Cuenta?</p>
-        <div>
-          <button onClick={crearCuenta}>
-            Creear Cuenta
-          </button>
+    <>
+      <div className="flex h-screen">
+        <div className="w-1/2">
+          <img src="/img/tronco.jpg" alt="Imagen de tronco" className="w-full h-full object-cover"/>
         </div>
-      </div>
-      <div>
-        <p>¿Olvidaste tu contraseña?</p>
-        <div>
-          <button>
-            Reestablecer Contraseña
-          </button>
-        </div>
-      </div>
-    </div>
 
+        <div className="flex justify-center items-center w-1/2">
+          <div className=" w-full max-w-md">
+            <h2 className='text-xl font-bold'>U-Foto</h2>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Nombre de Usuario:
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Password:
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                />
+                <div>
+                  <a href="#" className="text-sm text-blue-600 hover:underline">
+                    ¿Olvidaste tu contraseña?
+                  </a>
+                </div>
+              </div>
+              <div className="flex justify-between items-center pt-4">
+                <button
+                  type="submit"
+                  className="block w-full text-center mt-2 px-4 py-2 bg-green-500 rounded-lg shadow-md"
+                >
+                  Iniciar Sesión
+                </button>
+              </div>
+            </form>
+
+            {error && <p className="text-red-500 mt-4">{error}</p>}
+            {success && <p className="text-green-500 mt-4">{success}</p>}
+
+            <div className="mt-6">
+              <div>
+                <a href="#" className="text-sm text-blue-600 hover:underline">
+                  ¿No tienes una Cuenta?
+                </a>
+              </div>
+              <button
+                onClick={crearCuenta}
+                className="block w-full text-center mt-2 px-4 py-2 bg-green-500 rounded-lg shadow-md"
+              >
+                Crear Cuenta
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </>
   );
 }
 export default IniciarSesion
