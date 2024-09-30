@@ -44,7 +44,7 @@ const registerUser = async ({ username, email, password }: RegisterUserParams): 
   }
 };
 
-const Register = ()=> {
+const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -65,25 +65,50 @@ const Register = ()=> {
 
   return (
     <>
-      <div className=''>
-        <div>
-          <label>
-            Nombre de Usuario:
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          </label>
-          <label>
-            Email:
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </label>
-          <label>
-            Contraseña:
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          </label>
-          <button type="button" onClick={handleRegister}>Register</button>
+      <div className="flex h-screen">
+        <div className="flex justify-center items-center w-1/2">
+          <div className=" w-full max-w-md">
+            <h2 className='text-xl font-bold mb-4'>U-Foto</h2>
+            <h3 className='text-lg font-bold'>Registrar Usuario</h3>
+            <div className="space-y-4">
+              <div className='mt-2'>
+                <label className='mt-2'>
+                  Nombre de Usuario:
+                  <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required
+                    className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </label>
+                <label className='mt-2'>
+                  Email:
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+                    className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </label>
+                <label className='mt-2'>
+                  Contraseña:
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
+                    className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </label>
+                <div className="flex justify-between items-center pt-4">
+                  <button type="button" onClick={handleRegister}
+                    className="block w-full text-center mt-4 px-4 py-2 bg-green-500 rounded-lg shadow-md"
+                  >
+                    Registrar
+                  </button>
+                </div>
+              </div>
+            </div>
+            {error && <p>Error: {error}</p>}
+            {success && <p>{success}</p>}
+          </div>
         </div>
-        {error && <p>Error: {error}</p>}
-        {success && <p>{success}</p>}
+        <div className="w-1/2">
+          <img src="/img/fuego.jpg" alt="Imagen de Fuego" className="w-full h-full object-cover" />
+        </div>
+
       </div>
+
     </>
   );
 }

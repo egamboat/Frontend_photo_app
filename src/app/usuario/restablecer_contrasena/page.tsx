@@ -54,34 +54,46 @@ const ResetPassword = () => {
   };
 
   return (
-    <div>
-      <h1>Restablecer Contraseña</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="usernameOrEmail">Usuario o Correo Electrónico:</label>
-          <input
-            type="text"
-            id="usernameOrEmail"
-            value={usernameOrEmail}
-            onChange={(e) => setUsernameOrEmail(e.target.value)}
-            required
-          />
+    <>
+      <div className="flex h-screen">
+        <div className="flex justify-center items-center w-1/2">
+          <div className=" w-full max-w-md">
+            <h2 className='text-xl font-bold mb-4'>U-Foto</h2>
+            <h3 className='text-lg font-bold'>Restablecer Contraseña</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="usernameOrEmail" className="block text-sm font-medium text-gray-700">Usuario o Correo Electrónico:</label>
+                <input
+                  className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  type="text"
+                  id="usernameOrEmail"
+                  value={usernameOrEmail}
+                  onChange={(e) => setUsernameOrEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="newPassword">Nueva Contraseña:</label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <button className="p-4" type="submit">Reestablecer Contraseña</button>
+            </form>
+            {message && <p>{message}</p>}
+            {error && <p>Error: {error}</p>}
+          </div>
         </div>
-        <div>
-          <label htmlFor="newPassword">Nueva Contraseña:</label>
-          <input
-            type="password"
-            id="newPassword"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-          />
+        <div className="w-1/2">
+          <img src="/img/tronco.jpg" alt="Imagen de tronco" className="w-full h-full object-cover" />
         </div>
-        <button className="p-4" type="submit">Reestablecer Contraseña</button>
-      </form>
-      {message && <p>{message}</p>}
-      {error && <p>Error: {error}</p>}
-    </div>
+      </div>
+    </>
   );
 };
 

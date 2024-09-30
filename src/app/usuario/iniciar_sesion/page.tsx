@@ -83,7 +83,8 @@ const IniciarSesion = () => {
 
         <div className="flex justify-center items-center w-1/2">
           <div className=" w-full max-w-md">
-            <h2 className='text-xl font-bold'>U-Foto</h2>
+            <h2 className='text-xl font-bold mb-4'>U-Foto</h2>
+            <h3 className='text-lg font-bold'>Iniciar Sesión</h3>
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
