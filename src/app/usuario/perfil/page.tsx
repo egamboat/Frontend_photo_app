@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 const fetchProfile = async (token: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/usuario/profile/', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/usuario/profile/`, {
       method: 'GET',
       headers: {
         'Authorization': `Token ${token}`,

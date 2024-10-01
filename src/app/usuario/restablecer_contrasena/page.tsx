@@ -9,7 +9,7 @@ const resetPassword = async (usernameOrEmail: string, newPassword: string) => {
       throw new Error('Token not found');
     }
 
-    const response = await fetch('http://127.0.0.1:8000/usuario/reset_password/', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/usuario/reset_password/`, {
       method: 'POST',
       headers: {
         'Authorization': `Token ${token}`,

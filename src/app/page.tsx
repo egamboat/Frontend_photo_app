@@ -22,7 +22,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('http://127.0.0.1:8000/foto/api/fotos/');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/`);
       const result = await response.json();
       setData(result);
     }

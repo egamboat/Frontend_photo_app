@@ -10,7 +10,7 @@ const Navbar = () => {
         if (token) {
             try {
                 // Llamar a la API de logout en el backend
-                await axios.post('http://127.0.0.1:8000/usuario/logout/', {}, {
+                await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/usuario/logout/`, {}, {
                     headers: {
                         'Authorization': `Token ${token}`
                     }
