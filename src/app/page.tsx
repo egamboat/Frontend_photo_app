@@ -6,11 +6,14 @@ import { Foto } from '@/interface/default';
 interface Headers {
   [key: string]: string;
 }
+// @ts-ignore
+import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
+
 
 const Home: React.FC = () => {
-  const subir_foto = () => {
-    window.location.href = '/foto/crear';
-  };
+  // const subir_foto = () => {
+  //   window.location.href = '/foto/crear';
+  // };
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [data, setData] = useState<Foto[]>([]);
   const router = useRouter()
@@ -35,15 +38,9 @@ const Home: React.FC = () => {
     <>
       <Navbar></Navbar>
       <div>
-        <h1 className="justify-center">Photo App!</h1>
-        <div>
-          <button className="m-2 bg-blue rounded border" onClick={subir_foto}>
-            Subir Foto
-          </button>
-        </div>
         <div className="flex flex-col items-center">
           <div className="my-4">
-            <p className="font-bold text-3xl text-center">Comunidad</p>
+            <p className="font-bold text-3xl text-center mt-4">Comunidad</p>
           </div>
           {data.map((foto: Foto) => {
             // Verificamos si la foto es "public" o si el usuario está autenticado
@@ -55,15 +52,25 @@ const Home: React.FC = () => {
                     <img
                       src={foto.foto_url}
                       alt={foto.titulo}
-                      className="w-full h-64 object-cover rounded-lg"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                   </div>
 
                   <div className="w-1/2" m-4>
-                    <h2 className="font-bold text-xl">{foto.titulo}</h2>
+                    <div className='flex inline'>
+                      <p className='mr-4 h-4 w-4'>
+                        {foto.visibilidad === 'public' ? (
+                          <EyeIcon className="h-6 w-6" />
+                        ) : (
+                          <LockClosedIcon className="h-6 w-6" />
+                        )}
+                      </p>
+                      <h2 className="font-bold text-xl">{foto.titulo}</h2>
+                    </div>
+
                     <p className="text-gray-600">{foto.user}</p>
                     <p className="text-gray-500 mt-4">{foto.description}</p>
-                    <p className="mt-2 text-gray-400">{foto.creacion}</p>
+                    {/* <p className="mt-2 text-gray-400">{foto.creacion}</p> */}
                     <a href={`/foto/${foto.id}`} className="mt-2 inline-block">
                       Ver más...
                     </a>

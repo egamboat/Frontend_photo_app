@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios"; // Para realizar solicitudes HTTP
+import axios from "axios";
+import Navbar from '@/components/navbar';
 
 const PageFoto = () => {
-    // Usamos el estado para manejar los datos de la foto y la descripción
-    const [foto, setFoto] = useState(""); // Almacena la foto seleccionada
-    const [description, setDescription] = useState(""); // Almacena la descripción de la foto
-    const [visibilidad, setVisibilidad] = useState("public"); // Visibilidad de la foto
-    const [titulo, setTitulo] = useState(""); // Visibilidad de la foto
-    const [user, setUser] = useState("")
 
+    const [foto, setFoto] = useState("");
+    const [description, setDescription] = useState("");
+    const [visibilidad, setVisibilidad] = useState("public");
+    const [titulo, setTitulo] = useState("");
+    const [user, setUser] = useState("");
     // const handleFileChange = (e:any) => {
     //     setFoto(e.target.files[0]);
     // };
@@ -57,40 +57,80 @@ const PageFoto = () => {
 
     return (
         <>
-            <h2>Subir una nueva foto</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Título:</label>
-                    <textarea value={titulo} onChange={handleUrlTitulo} placeholder="Título para la foto." required />
-                </div>
-                <div>
-                    <label>Seleccionar foto:</label>
-                    {/* <input type="file" accept="image/*" onChange={handleFileChange} required /> */}
-                    <textarea value={foto} onChange={handleUrlFoto} placeholder="Coloca el enlace de la foto" required />
-                </div>
+            <Navbar></Navbar>
+            <div className="max-w-md mx-auto rounded-lg p-6">
+                <h2 className="text-2xl font-bold my-4 text-center">Publicar una Nueva Foto</h2>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="mt-4">
+                        <label className="block text-lg font-bold mb-1">Título:</label>
+                        <input
+                            type="text"
+                            value={titulo}
+                            onChange={handleUrlTitulo}
+                            placeholder="Título para la foto."
+                            required
+                            className="w-full border border-gray-300 p-2 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
 
-                {/* Input para agregar la descripción */}
-                <div>
-                    <label>Descripción:</label>
-                    <textarea value={description} onChange={handleDescriptionChange} placeholder="Añade una descripción..." required />
-                </div>
+                    <div className="mt-4">
+                        <label className="block text-lg font-bold mb-1">Url de la Imágen:</label>
+                        <input
+                            type="text"
+                            value={foto}
+                            onChange={handleUrlFoto}
+                            placeholder="Url de la imágen."
+                            required
+                            className="w-full border border-gray-300 p-2 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+                    {/* Input para agregar la descripción */}
+                    <div className="mt-4">
+                        <label className="block text-lg font-bold mb-1"> Descripción:</label>
+                        <textarea
+                            value={description}
+                            onChange={handleDescriptionChange}
+                            placeholder="Añade una descripción..."
+                            required
+                            className="w-full border border-gray-300 p-2 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
 
-                {/* Selector para elegir la visibilidad */}
-                <div>
-                    <label>Visibilidad:</label>
-                    <select value={visibilidad} onChange={handleVisibilidadChange}>
-                        <option value="public">Pública</option>
-                        <option value="private">Privada</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Usuario:</label>
-                    <textarea value={user} onChange={handleUser} placeholder="Coloca el usuario..." required />
-                </div>
+                    {/* Selector para elegir la visibilidad */}
+                    <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Visibilidad:</label>
+                        <select
+                            value={visibilidad}
+                            onChange={handleVisibilidadChange}
+                            className="w-full border border-gray-300 p-2 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="public">Pública</option>
+                            <option value="private">Privada</option>
+                        </select>
+                    </div>
 
-                {/* Botón para enviar el formulario */}
-                <button type="submit">Subir foto</button>
-            </form>
+                    <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Usuario:</label>
+                        <input
+                            value={user}
+                            onChange={handleUser}
+                            placeholder="Coloca el usuario..."
+                            required
+                            className="w-full border border-gray-300 p-2 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* Botón para enviar el formulario */}
+                    <div className="mt-4">
+                        <button
+                            type="submit"
+                            className="w-full mt-2 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 shadow-md border"
+                        >
+                            Subir foto
+                        </button>
+                    </div>
+                </form>
+            </div>
         </>
     );
 };

@@ -1,35 +1,49 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import React from "react";
 import axios from 'axios';
 
 const Navbar = () => {
-    const handleLogout = async () => {
-        const token = localStorage.getItem('token');
+    const [haveToken, setHaveToken] = useState<any>()
 
-        if (token) {
+    const iniciarSesion = () => {
+        window.location.href = '/usuario/iniciar_sesion';
+    }
+
+    const subirFoto = () => {
+        window.location.href = '/foto/crear';
+    };
+
+    const handleLogout = async () => {
+        setHaveToken(localStorage.getItem('token'))
+        //const token = localStorage.getItem('token');
+
+        if (haveToken) {
             try {
-                // Llamar a la API de logout en el backend
                 await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/usuario/logout/`, {}, {
                     headers: {
-                        'Authorization': `Token ${token}`
+                        'Authorization': `Token ${haveToken}`
                     }
                 });
 
-                // Eliminar el token del localStorage
                 localStorage.removeItem('token');
 
-                // Redirigir a la página de inicio de sesión
                 window.location.href = '/usuario/iniciar_sesion';
             } catch (error) {
                 console.error('Error al cerrar sesión:', error);
             }
         } else {
-            // Redirigir si no hay token en localStorage
             window.location.href = '/usuario/iniciar_sesion';
         }
     };
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setHaveToken(token);
+        }
+    })
     return (
         <>
             <nav className="bg-white border border-gray-200 dark:border-gray-700 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800 shadow">
@@ -63,14 +77,16 @@ const Navbar = () => {
                         id="mobile-menu"
                     >
                         <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
-                            {/* <li>
-                                <a
-                                    href="#"
-                                    className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                                >
-                                    About
-                                </a>
-                            </li> */}
+                            {(haveToken) ? (
+                                <li>
+                                    <button
+                                        onClick={subirFoto}
+                                        className="block rounded border py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                                    >
+                                        Subir Foto
+                                    </button>
+                                </li>
+                            ) : null}
                             <li>
                                 <a
                                     href="#"
@@ -80,12 +96,21 @@ const Navbar = () => {
                                 </a>
                             </li>
                             <li>
-                                <button
-                                    onClick={handleLogout}
-                                    className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                                >
-                                    Cerrar Sesión
-                                </button>
+                                {(haveToken) ? (
+                                    <button
+                                        onClick={handleLogout}
+                                        className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                                    >
+                                        Cerrar Sesión
+                                    </button>
+                                ) :
+                                    (<button
+                                        onClick={iniciarSesion}
+                                        className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                                    >
+                                        Iniciar Sesión
+                                    </button>
+                                    )}
                             </li>
                         </ul>
                     </div>

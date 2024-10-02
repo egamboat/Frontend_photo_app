@@ -4,6 +4,8 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/navbar';
 import { Foto } from '@/interface/default';
+// @ts-ignore
+import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
 
 
 interface FotoPageProps {
@@ -28,12 +30,9 @@ const FotoPage = async ({ params }: FotoPageProps) => {
     return (
       <>
         <Navbar></Navbar>
-        <div>
-          <div className='font-bold text-lg m-4'>
-            <h1>{foto.titulo}</h1>
-          </div>
-          <div className="">
-            <div className="m-6 max-w-full sm:max-w-[348px] md:max-w-[364px] lg:max-w-[496px]">
+        <div className='mx-6 mt-4 p-2'>
+          <div className="flex flex-row items-center">
+            <div className="w-1/2 m-6 max-w-full sm:max-w-[348px] md:max-w-[464px] lg:max-w-[596px]">
               <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
                 <img
                   className="absolute top-0 left-0 w-full h-full object-cover"
@@ -42,10 +41,22 @@ const FotoPage = async ({ params }: FotoPageProps) => {
                 />
               </div>
             </div>
-            <div className='font-bold text-lg m-4'>
-              <p>{foto.description}</p>
+            <div className='w-1/2 m-4 p-4'>
+              <div className='flex inline font-bold text-2xl mt-6'>
+                <h1>{foto.titulo}</h1>
+                <p className='ml-4'>
+                  {foto.visibilidad === 'public' ? (
+                    <EyeIcon className="h-5 w-5" />
+                  ) : (
+                    <LockClosedIcon className="h-5 w-5" />
+                  )}
+                </p>
+              </div>
+              <div className='mt-6 text-lg'>
+                <p>{foto.description}</p>
+              </div>
             </div>
-            
+
           </div>
         </div>
       </>
