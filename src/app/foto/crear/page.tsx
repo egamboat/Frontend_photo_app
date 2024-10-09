@@ -9,7 +9,7 @@ const PageFoto = () => {
     const [description, setDescription] = useState("");
     const [visibilidad, setVisibilidad] = useState("public");
     const [titulo, setTitulo] = useState("");
-    const [user, setUser] = useState("");
+
     // const handleFileChange = (e:any) => {
     //     setFoto(e.target.files[0]);
     // };
@@ -26,19 +26,22 @@ const PageFoto = () => {
     const handleVisibilidadChange = (e: any) => {
         setVisibilidad(e.target.value);
     };
-    const handleUser = (e: any) => {
-        setUser(e.target.value);
-    };
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
+
+        const userId = localStorage.getItem('user_id');
+  
+        if (!userId) {
+          throw new Error("Usuario no autenticado");
+        }
 
         const formData = new FormData();
         formData.append("titulo", titulo);
         formData.append("foto_url", foto);
         formData.append("description", description);
         formData.append("visibilidad", visibilidad);
-        formData.append("user", user);
+        formData.append("user", userId);
 
         try {
             const response = await axios.post("http://localhost:8000/foto/api/fotos/", formData, {
@@ -49,6 +52,7 @@ const PageFoto = () => {
             });
 
             alert("¡Foto subida exitosamente!");
+            window.location.href = '/';
         } catch (error) {
             console.error("Error al subir la foto:", error);
             alert("Hubo un error al subir la foto.");
@@ -107,17 +111,6 @@ const PageFoto = () => {
                             <option value="public">Pública</option>
                             <option value="private">Privada</option>
                         </select>
-                    </div>
-
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Usuario:</label>
-                        <input
-                            value={user}
-                            onChange={handleUser}
-                            placeholder="Coloca el usuario..."
-                            required
-                            className="w-full border border-gray-300 p-2 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        />
                     </div>
 
                     {/* Botón para enviar el formulario */}

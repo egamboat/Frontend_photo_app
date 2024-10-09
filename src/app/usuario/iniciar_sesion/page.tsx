@@ -6,6 +6,7 @@ import { useState } from 'react';
 interface LoginResponse {
   token: string;
   user: {
+    id: string;
     username: string;
     email: string;
   };
@@ -37,6 +38,7 @@ const loginUser = async ({ username, password }: LoginUserParams): Promise<Login
     const data: LoginResponse = await response.json();
 
     localStorage.setItem('token', data.token);
+    localStorage.setItem('user_id', data.user.id);
 
     console.log("Sesión Iniciada");
     return data;

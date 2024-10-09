@@ -17,11 +17,10 @@ const FotoPage = async ({ params }: FotoPageProps) => {
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/${id}/`, {
-      cache: 'no-store', // Opcional: evita caché para obtener datos actualizados
+      cache: 'no-store',
     });
 
     if (!res.ok) {
-      // Si la respuesta no es exitosa, muestra una página 404
       notFound();
     }
 
@@ -41,7 +40,7 @@ const FotoPage = async ({ params }: FotoPageProps) => {
                 />
               </div>
             </div>
-            <div className='w-1/2 m-4 p-4'>
+            <div className='w-1/2 m-4 p-4 overflow-y'>
               <div className='flex inline font-bold text-2xl mt-6'>
                 <h1>{foto.titulo}</h1>
                 <p className='ml-4'>
@@ -55,8 +54,19 @@ const FotoPage = async ({ params }: FotoPageProps) => {
               <div className='mt-6 text-lg'>
                 <p>{foto.description}</p>
               </div>
-            </div>
+              <div>
+                <div className='m-2 font-bold text-lg'>
+                  <h1>Comentarios</h1>
+                </div>
+                <div>
 
+                  <input type="" placeholder='Crear Comentario' />
+                  <button>
+                    Comentar
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </>
