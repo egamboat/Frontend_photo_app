@@ -12,19 +12,27 @@ import { toast } from 'react-toastify';
 // @ts-ignore
 import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
 
-
 interface FotoPageProps {
   params: { id: string };
 }
+interface Comentario {
+  id: number;
+  user: string; // o el tipo que sea adecuado para el usuario
+  texto_comentado: string;
+  creacion: string;
+}
 
-const { comentar } = funcionesFoto();
+const { comentar, cargarComentarios } = funcionesFoto();
 
 const FotoPage = ({ params }: FotoPageProps) => {
   const { id } = params;
   const [foto, setFoto] = useState<Foto | null>(null);
+  const [fotoID, setFotoID] = useState<Foto | null>(null);
+
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [comentario, setComentario] = useState<string>("");
+  const [comentarios, setComentarios] = useState<Comentario[]>([]);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('user_id');
@@ -44,7 +52,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
         setFoto(data);
       } catch (error) {
 
-        toast.error('Error al obtener la foto.')
+        toast.error('Error al obtener la foto.');
         console.error('Error al obtener la foto:', error);
         notFound();
       } finally {
@@ -53,6 +61,17 @@ const FotoPage = ({ params }: FotoPageProps) => {
     };
 
     cargarFoto();
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const idfoto = parseInt(id);
+    if (!isNaN(idfoto)) {
+      cargaComentarios(idfoto);
+    } else {
+      console.error('ID de la foto no es válido.');
+    }
   }, [id]);
 
   const enviarComentario = async () => {
@@ -71,6 +90,18 @@ const FotoPage = ({ params }: FotoPageProps) => {
       console.log('Comentario enviado:', result);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const cargaComentarios = async (idfoto: number) => {
+
+    try {
+      const result = await cargarComentarios(idfoto);
+      setComentarios(result)
+      console.log('Comentarios:', result);
+    } catch (error) {
+      console.error(error);
+      toast.error('Ocurri+o un error al cargar los coemntarios.')
     }
   };
 
