@@ -7,8 +7,7 @@ import { Foto } from '@/interface/default';
 import Head from 'next/head';
 import Cargando from '@/components/loading';
 import funcionesFoto from './useFoto';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 // @ts-ignore
 import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
@@ -17,6 +16,7 @@ import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
 interface FotoPageProps {
   params: { id: string };
 }
+
 const { comentar } = funcionesFoto();
 
 const FotoPage = ({ params }: FotoPageProps) => {
@@ -30,7 +30,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
     const storedUserId = localStorage.getItem('user_id');
     setUserId(storedUserId);
 
-    const fetchFoto = async () => {
+    const cargarFoto = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/${id}/`, {
           cache: 'no-store',
@@ -43,7 +43,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
         const data: Foto = await res.json();
         setFoto(data);
       } catch (error) {
-        
+
         toast.error('Error al obtener la foto.')
         console.error('Error al obtener la foto:', error);
         notFound();
@@ -52,7 +52,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
       }
     };
 
-    fetchFoto();
+    cargarFoto();
   }, [id]);
 
   const enviarComentario = async () => {
@@ -66,9 +66,11 @@ const FotoPage = ({ params }: FotoPageProps) => {
       };
 
       const result = await comentar(body);
+      toast.success('Comentario Realizado.')
+
       console.log('Comentario enviado:', result);
     } catch (error) {
-      console.error('Error al enviar el comentario:', error);
+      console.error(error);
     }
   };
 
@@ -77,13 +79,11 @@ const FotoPage = ({ params }: FotoPageProps) => {
   }
 
   if (!foto) {
-    return null; // O mostrar un mensaje de que no se encontró la foto
+    return null;
   }
 
   return (
     <>
-      <ToastContainer />
-
       <Head>
         <title>Photo Blog - {foto.titulo}</title>
         <meta name="description" content="Descripción de la página" />
@@ -117,26 +117,29 @@ const FotoPage = ({ params }: FotoPageProps) => {
             <div className='mt-6 text-lg'>
               <p>{foto.description}</p>
             </div>
-            
+
             {/*Comentarios*/}
-            <div className='mt-2'>
+            <div className='mt-4'>
               <div className='font-bold text-lg'>
                 <h2>Comentarios</h2>
               </div>
-              <div className='border rounded'>
+              <div className='flex items-center rounded p-2'>
                 <input
                   type="text"
-                  placeholder='Crear Comentario'
+                  placeholder='¿Qué opinas de la foto?'
                   value={comentario}
-                  onChange={(e) => setComentario(e.target.value)}  // Actualizamos el estado con el valor del input
+                  onChange={(e) => setComentario(e.target.value)}
+                  className='flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-blue-500'
                 />
-                <button onClick={enviarComentario}>
+                <button
+                  onClick={enviarComentario}
+                  className='ml-2 border-lg rounded-lg p-2 hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+                >
                   Comentar
                 </button>
 
               </div>
             </div>
-
           </div>
         </div>
       </div>

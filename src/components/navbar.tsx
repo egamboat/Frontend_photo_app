@@ -17,7 +17,6 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         setHaveToken(localStorage.getItem('token'))
-        //const token = localStorage.getItem('token');
 
         if (haveToken) {
             try {
@@ -54,7 +53,7 @@ const Navbar = () => {
                         </span>
                     </a>
 
-                    <div className="flex items-center">
+                    {/* <div className="flex items-center">
                         <button
                             id="menu-toggle"
                             type="button"
@@ -69,8 +68,8 @@ const Navbar = () => {
                                     d="M4 6h16M4 12h16m-7 6h7"
                                 />
                             </svg>
-                        </button>
-                    </div>
+                        </button> 
+                    </div>*/}
 
                     <div
                         className="w-full md:block md:w-auto hidden"
