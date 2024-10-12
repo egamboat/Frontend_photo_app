@@ -7,6 +7,9 @@ import { Foto } from '@/interface/default';
 import Head from 'next/head';
 import Cargando from '@/components/loading';
 import funcionesFoto from './useFoto';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // @ts-ignore
 import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
 
@@ -40,6 +43,8 @@ const FotoPage = ({ params }: FotoPageProps) => {
         const data: Foto = await res.json();
         setFoto(data);
       } catch (error) {
+        
+        toast.error('Error al obtener la foto.')
         console.error('Error al obtener la foto:', error);
         notFound();
       } finally {
@@ -55,7 +60,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
     try {
       const body = {
-        texto_comentado: "Este es un comentario.",
+        texto_comentado: comentario,
         user: userId,
         foto: id,
       };
@@ -77,6 +82,8 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
   return (
     <>
+      <ToastContainer />
+
       <Head>
         <title>Photo Blog - {foto.titulo}</title>
         <meta name="description" content="Descripción de la página" />
@@ -110,7 +117,8 @@ const FotoPage = ({ params }: FotoPageProps) => {
             <div className='mt-6 text-lg'>
               <p>{foto.description}</p>
             </div>
-
+            
+            {/*Comentarios*/}
             <div className='mt-2'>
               <div className='font-bold text-lg'>
                 <h2>Comentarios</h2>
@@ -119,7 +127,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
                 <input
                   type="text"
                   placeholder='Crear Comentario'
-                  value={comentario}  // Asignamos el valor actual del estado
+                  value={comentario}
                   onChange={(e) => setComentario(e.target.value)}  // Actualizamos el estado con el valor del input
                 />
                 <button onClick={enviarComentario}>

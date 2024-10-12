@@ -1,52 +1,10 @@
 "use client";
-// pages/login.tsx
+
 import React from 'react';
 import { useState } from 'react';
-
-interface LoginResponse {
-  token: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-  };
-}
-
-interface LoginUserParams {
-  username: string;
-  password: string;
-}
-
-const loginUser = async ({ username, password }: LoginUserParams): Promise<LoginResponse> => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/usuario/login/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Error: ${errorData.error || 'Something went wrong'}`);
-    }
-
-    const data: LoginResponse = await response.json();
-
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user_id', data.user.id);
-
-    console.log("Sesión Iniciada");
-    return data;
-  } catch (error) {
-    console.log('Error logging in:', error);
-    throw error;
-  }
-};
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Usuario from '../useIniciarSesion';
 
 
 const IniciarSesion = () => {
@@ -54,9 +12,10 @@ const IniciarSesion = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const {loginUser} = Usuario();
 
   const contrasena = "";
-  const usuario = "esaugt2001";
+  const usuario = "esau2001";
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,8 +24,10 @@ const IniciarSesion = () => {
       const data = await loginUser({ username, password });
       localStorage.setItem('token', data.token)
       window.location.href = '/';
-      setSuccess(`Inicio de sesión exitoso!`);
+      setSuccess('Inicio de sesión exitoso!');
+      toast.success('Inicio de sesión exitoso!')
       setError(null);
+
     } catch (error) {
       console.log(error)
       setSuccess(null);
@@ -78,9 +39,11 @@ const IniciarSesion = () => {
   }
   return (
     <>
+      <ToastContainer />
+
       <div className="flex h-screen">
         <div className="w-1/2">
-          <img src="/img/tronco.jpg" alt="Imagen de tronco" className="w-full h-full object-cover"/>
+          <img src="/img/tronco.jpg" alt="Imagen de tronco" className="w-full h-full object-cover" />
         </div>
 
         <div className="flex justify-center items-center w-1/2">
@@ -94,7 +57,7 @@ const IniciarSesion = () => {
                 </label>
                 <input
                   type="text"
-                  value={username}
+                  value={username || usuario}
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   className="mt-1 p-2 w-full border rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -126,9 +89,6 @@ const IniciarSesion = () => {
                 </button>
               </div>
             </form>
-
-            {error && <p className="text-red-500 mt-4">{error}</p>}
-            {success && <p className="text-green-500 mt-4">{success}</p>}
 
             <div className="mt-6">
               <div>

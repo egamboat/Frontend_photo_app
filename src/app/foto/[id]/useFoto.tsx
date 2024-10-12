@@ -25,7 +25,6 @@ const funcionesFoto = () => {
 
   return {
     comentar,
-    // Otras funciones que desees agregar
   };
 }
 

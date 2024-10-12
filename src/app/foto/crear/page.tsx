@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Navbar from '@/components/navbar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const PageFoto = () => {
 
@@ -51,16 +54,18 @@ const PageFoto = () => {
                 },
             });
 
-            alert("¡Foto subida exitosamente!");
+            toast.success("¡Foto subida exitosamente!");
             window.location.href = '/';
+
         } catch (error) {
             console.error("Error al subir la foto:", error);
-            alert("Hubo un error al subir la foto.");
+            toast.error("Hubo un error al subir la foto.");
         }
     };
 
     return (
-        <>
+        <> 
+         <ToastContainer />
             <Navbar></Navbar>
             <div className="max-w-md mx-auto rounded-lg p-6">
                 <h2 className="text-2xl font-bold my-4 text-center">Publicar una Nueva Foto</h2>
