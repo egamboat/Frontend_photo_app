@@ -8,3 +8,11 @@ export interface Foto {
     modificacion: string;
     user: number;
 }
+
+export interface Comentario {
+    id: number;
+    user: string;
+    texto_comentado: string;
+    creacion: string;
+    nombre_usuario: string;
+  }

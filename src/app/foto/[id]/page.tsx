@@ -8,18 +8,12 @@ import Head from 'next/head';
 import Cargando from '@/components/loading';
 import funcionesFoto from './useFoto';
 import { toast } from 'react-toastify';
-
+import { Comentario } from '@/interface/default';
 // @ts-ignore
 import { EyeIcon, LockClosedIcon } from '@heroicons/react/solid';
 
 interface FotoPageProps {
   params: { id: string };
-}
-interface Comentario {
-  id: number;
-  user: string; // o el tipo que sea adecuado para el usuario
-  texto_comentado: string;
-  creacion: string;
 }
 
 const { comentar, cargarComentarios } = funcionesFoto();
@@ -65,10 +59,11 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
   useEffect(() => {
     if (!id) return;
-
+    
     const idfoto = parseInt(id);
     if (!isNaN(idfoto)) {
       cargaComentarios(idfoto);
+      console.log(idfoto)
     } else {
       console.error('ID de la foto no es válido.');
     }
@@ -77,6 +72,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
   const enviarComentario = async () => {
     if (!userId) return;
 
+    
     try {
       const body = {
         texto_comentado: comentario,
@@ -84,6 +80,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
         foto: id,
       };
 
+      console.log("Body:", body)
       const result = await comentar(body);
       toast.success('Comentario Realizado.')
 
@@ -154,13 +151,13 @@ const FotoPage = ({ params }: FotoPageProps) => {
               <div className='font-bold text-lg'>
                 <h2>Comentarios</h2>
               </div>
-              <div className='flex items-center rounded p-2'>
+              <div className='flex items-center rounded py-2'>
                 <input
                   type="text"
                   placeholder='¿Qué opinas de la foto?'
                   value={comentario}
                   onChange={(e) => setComentario(e.target.value)}
-                  className='flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                  className='flex-grow border border-gray-300 rounded-lg py-2 focus:outline-none focus:ring-1 focus:ring-blue-500'
                 />
                 <button
                   onClick={enviarComentario}
@@ -168,8 +165,38 @@ const FotoPage = ({ params }: FotoPageProps) => {
                 >
                   Comentar
                 </button>
-
               </div>
+
+              <div className="space-y-4">
+                {comentarios.map((comentario) => (
+                  <div
+                    key={comentario.id}
+                    className="p-4 border border-gray-300 rounded-lg shadow-sm bg-white"
+                  >
+                    <div className="flex items-center mb-2">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
+                        {/* Esto es un placeholder para la imagen de perfil */}
+                        <span className="text-xl font-semibold text-gray-700">
+                          {comentario.nombre_usuario.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900">
+                        {comentario.nombre_usuario}
+                      </h3>
+                    </div>
+
+                    <div className="flex justify-between items-end">
+                      <p className="text-gray-700 text-sm">{comentario.texto_comentado}</p>
+                      <p className="text-xs text-gray-500">
+                        Publicado el {new Date(comentario.creacion).toLocaleDateString()}
+                      </p>
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+
+
             </div>
           </div>
         </div>
