@@ -31,16 +31,17 @@ const FotoPage = ({ params }: FotoPageProps) => {
   useEffect(() => {
     const storedUserId = localStorage.getItem('user_id');
     setUserId(storedUserId);
+    const token = localStorage.getItem('token');
 
     const cargarFoto = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/${id}/`, {
           cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+          },
         });
-
-        if (!res.ok) {
-          notFound();
-        }
 
         const data: Foto = await res.json();
         setFoto(data);
@@ -48,7 +49,6 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
         toast.error('Error al obtener la foto.');
         console.error('Error al obtener la foto:', error);
-        notFound();
       } finally {
         setLoading(false);
       }
@@ -71,7 +71,6 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
   const enviarComentario = async () => {
     if (!userId) return;
-
     
     try {
       const body = {

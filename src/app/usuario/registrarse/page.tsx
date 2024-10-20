@@ -51,7 +51,16 @@ const Register = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+
   const handleRegister = async () => {
+    //Validar correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Debe introducir un correo electrónico correcto.");
+      setSuccess(null);
+      return; // Detener el proceso si el correo no es válido
+    }
+
     try {
       const data = await registerUser({ username, email, password });
       setSuccess(`Registration successful!`);
@@ -65,9 +74,9 @@ const Register = () => {
 
   return (
     <>
-      <div className="flex h-screen">
-        <div className="flex justify-center items-center w-1/2">
-          <div className=" w-full max-w-md">
+      <div className="flex h-screen p-4">
+        <div className="flex justify-center items-center w-full md:w-1/2 p-2">
+          <div className=" w-full max-w-md p-4">
             <h2 className='text-xl font-bold mb-4'>U-Foto</h2>
             <h3 className='text-lg font-bold'>Registrar Usuario</h3>
             <div className="space-y-4">
@@ -103,7 +112,7 @@ const Register = () => {
             {success && <p>{success}</p>}
           </div>
         </div>
-        <div className="w-1/2">
+        <div className="hidden md:block md:w-1/2">
           <img src="/img/fuego.jpg" alt="Imagen de Fuego" className="w-full h-full object-cover" />
         </div>
 

@@ -43,12 +43,12 @@ const IniciarSesion = () => {
   return (
     <>
 
-      <div className="flex h-screen">
-        <div className="w-1/2">
+      <div className="flex h-screen p-4">
+        <div className="hidden md:block md:w-1/2">
           <img src="/img/tronco.jpg" alt="Imagen de tronco" className="w-full h-full object-cover" />
         </div>
-        <div className="flex justify-center items-center w-1/2">
-          <div className=" w-full max-w-md">
+        <div className="flex justify-center items-center w-full md:w-1/2 p-2">
+          <div className=" w-full max-w-md p-4">
             <h2 className='text-xl font-bold mb-4'>U-Foto</h2>
 
             {(loading) && <Cargando />}

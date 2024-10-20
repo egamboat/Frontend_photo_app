@@ -20,18 +20,38 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token); // Actualizamos el estado solo en el cliente
-  }, []);
+    setIsAuthenticated(!!token);
 
-  useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/`);
-      const result = await response.json();
-      setData(result);
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+  
+      if (token) {
+        headers['Authorization'] = `Token ${token}`;
+      }
+  
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/`, {
+          method: 'GET',
+          headers: headers,
+        });
+  
+        if (!response.ok) {
+          throw new Error('Error al cargar las fotos');
+        }
+  
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error('Error al obtener las fotos:', error);
+      }
     }
-
+  
     fetchData();
   }, []);
+  
+
 
   console.log(data)
   return (

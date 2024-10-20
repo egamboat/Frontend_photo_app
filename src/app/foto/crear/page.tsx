@@ -50,7 +50,7 @@ const PageFoto = () => {
             const response = await axios.post("http://localhost:8000/foto/api/fotos/", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    //"Authorization": `Bearer ${localStorage.getItem("token")}`
+                    "Authorization": `Token ${localStorage.getItem("token")}`
                 },
             });
 
