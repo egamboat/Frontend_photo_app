@@ -59,7 +59,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
   useEffect(() => {
     if (!id) return;
-    
+
     const idfoto = parseInt(id);
     if (!isNaN(idfoto)) {
       cargaComentarios(idfoto);
@@ -71,7 +71,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
 
   const enviarComentario = async () => {
     if (!userId) return;
-    
+
     try {
       const body = {
         texto_comentado: comentario,
@@ -84,6 +84,12 @@ const FotoPage = ({ params }: FotoPageProps) => {
       toast.success('Comentario Realizado.')
 
       console.log('Comentario enviado:', result);
+
+      setComentario('');
+      const idfoto = parseInt(id);
+      if (!isNaN(idfoto)) {
+        await cargaComentarios(idfoto);
+      }
     } catch (error) {
       console.error(error);
     }
