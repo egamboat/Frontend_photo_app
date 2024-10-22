@@ -16,7 +16,7 @@ interface FotoPageProps {
   params: { id: string };
 }
 
-const { comentar, cargarComentarios } = funcionesFoto();
+const { comentar, cargarComentarios, eliminarComentario } = funcionesFoto();
 
 const FotoPage = ({ params }: FotoPageProps) => {
   const { id } = params;
@@ -27,6 +27,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [comentario, setComentario] = useState<string>("");
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
+  const [editandoComentarioId, setEditandoComentarioId] = useState<number | null>(null);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('user_id');
@@ -68,44 +69,65 @@ const FotoPage = ({ params }: FotoPageProps) => {
       console.error('ID de la foto no es válido.');
     }
   }, [id]);
+  const iniciarEdicion = (comentario: Comentario) => {
+    setComentario(comentario.texto_comentado); // Cargar el texto en el campo de comentario
+    setEditandoComentarioId(comentario.id);    // Guardar el ID del comentario que se está editando
+  };
 
   const enviarComentario = async () => {
     if (!userId) return;
 
+    const body = {
+      texto_comentado: comentario,
+      user: userId,
+      foto: id,
+    };
+
     try {
-      const body = {
-        texto_comentado: comentario,
-        user: userId,
-        foto: id,
-      };
-
-      console.log("Body:", body)
-      const result = await comentar(body);
-      toast.success('Comentario Realizado.')
-
-      console.log('Comentario enviado:', result);
+      if (editandoComentarioId) {
+        await comentar(body, editandoComentarioId);
+        toast.success('Comentario actualizado.');
+      } else {
+        await comentar(body);
+        toast.success('Comentario creado.');
+      }
 
       setComentario('');
+      setEditandoComentarioId(null);
+
       const idfoto = parseInt(id);
       if (!isNaN(idfoto)) {
         await cargaComentarios(idfoto);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error al enviar o actualizar el comentario:', error);
     }
   };
 
   const cargaComentarios = async (idfoto: number) => {
-
     try {
       const result = await cargarComentarios(idfoto);
       setComentarios(result)
       console.log('Comentarios:', result);
     } catch (error) {
       console.error(error);
-      toast.error('Ocurri+o un error al cargar los coemntarios.')
+      toast.error('Ocurrió un error al cargar los comentarios.')
     }
   };
+  const eliminaComentario = async (idComentario: number) => {
+    try {
+      const result = await eliminarComentario(idComentario);
+      setEditandoComentarioId(null);
+      const idfoto = parseInt(id);
+      if (!isNaN(idfoto)) {
+        await cargaComentarios(idfoto);
+      }
+
+    } catch (error) {
+      console.error(error);
+      toast.error('Ocurrió un error al cargar los comentarios.')
+    }
+  }
 
   if (loading) {
     return <Cargando />;
@@ -173,35 +195,56 @@ const FotoPage = ({ params }: FotoPageProps) => {
               </div>
 
               <div className="space-y-4">
-                {comentarios.map((comentario) => (
-                  <div
-                    key={comentario.id}
-                    className="p-4 border border-gray-300 rounded-lg shadow-sm bg-white"
-                  >
-                    <div className="flex items-center mb-2">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
-                        {/* Esto es un placeholder para la imagen de perfil */}
-                        <span className="text-xl font-semibold text-gray-700">
-                          {comentario.nombre_usuario.charAt(0).toUpperCase()}
-                        </span>
+                {comentarios.map((comentario) => {
+                  const userIdFromLocalStorage = localStorage.getItem('user_id');
+                  const isOwner = userIdFromLocalStorage === String(comentario.user);
+
+                  return (
+                    <div
+                      key={comentario.id}
+                      className="p-4 border border-gray-300 rounded-lg shadow-sm bg-white"
+                    >
+                      <div className="flex items-center mb-2">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
+                          {/* Esto es un placeholder para la imagen de perfil */}
+                          <span className="text-xl font-semibold text-gray-700">
+                            {comentario.nombre_usuario.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-[1rem] font-bold text-gray-900">
+                            {comentario.nombre_usuario}
+                          </h3>
+
+                          {isOwner && (
+                            <div className="flex ml-auto">
+                              {/* Condicional para mostrar el botón "Editar" solo si el usuario es el autor del comentario */}
+                              <button
+                                onClick={() => iniciarEdicion(comentario)}  // Iniciar el proceso de edición
+                                className="text-blue-500 text-sm px-2"
+                              >
+                                <i className="ri-edit-2-line"></i>
+                              </button>
+                              <button
+                                onClick={() => eliminaComentario(comentario.id)}
+                                className="text-red-500 text-sm px-2"
+                              >
+                                <i className="ri-delete-bin-6-line"></i>
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900">
-                        {comentario.nombre_usuario}
-                      </h3>
+                      <div className="flex justify-between items-end">
+                        <p className="text-gray-700 text-sm">{comentario.texto_comentado}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(comentario.creacion).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-
-                    <div className="flex justify-between items-end">
-                      <p className="text-gray-700 text-sm">{comentario.texto_comentado}</p>
-                      <p className="text-xs text-gray-500">
-                        Publicado el {new Date(comentario.creacion).toLocaleDateString()}
-                      </p>
-                    </div>
-
-                  </div>
-                ))}
+                  );
+                })}
               </div>
-
-
             </div>
           </div>
         </div>
