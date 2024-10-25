@@ -156,9 +156,23 @@ const FotoPage = ({ params }: FotoPageProps) => {
                 alt={foto.titulo}
               />
             </div>
+            <div>
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = foto.foto_url;
+                  link.target = '_blank';
+                  link.download = `${foto.titulo || 'foto'}.jpg`;
+                  link.click();
+                }}
+                className='ml-2 rounded-lg p-2 focus:outline-none'
+              >
+                <i className="ri-import-line"></i> Descargar
+              </button>
+            </div>
           </div>
-          <div className='w-1/2 m-4 p-4 overflow-y'>
 
+          <div className='w-1/2 m-4 p-4 overflow-y'>
             <div className='flex inline font-bold text-2xl mt-6 items-center'>
               <h1>{foto.titulo}</h1>
               <p className='ml-4'>
