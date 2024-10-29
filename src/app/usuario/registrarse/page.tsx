@@ -2,6 +2,8 @@
 import { register } from 'module';
 // pages/register.tsx
 import { useState } from 'react';
+import Usuario from '../useIniciarSesion';
+import Cargando from '@/components/loading';
 
 interface RegisterResponse {
   token: string;
@@ -50,7 +52,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const { loginUser } = Usuario();
 
   const handleRegister = async () => {
     //Validar correo
@@ -62,13 +65,16 @@ const Register = () => {
     }
 
     try {
+      setLoading(true);
       const data = await registerUser({ username, email, password });
       setSuccess(`Registration successful!`);
       setError(null);
+      setLoading(false);
       window.location.href = '/usuario/iniciar_sesion';
     } catch (error) {
       setError('Error registering user');
       setSuccess(null);
+      setLoading(false);
     }
   };
 
@@ -78,6 +84,9 @@ const Register = () => {
         <div className="flex justify-center items-center w-full md:w-1/2 p-2">
           <div className=" w-full max-w-md p-4">
             <h2 className='text-xl font-bold mb-4'>U-Foto</h2>
+
+            {(loading) && <Cargando />}
+
             <h3 className='text-lg font-bold'>Registrar Usuario</h3>
             <div className="space-y-4">
               <div className='mt-2'>

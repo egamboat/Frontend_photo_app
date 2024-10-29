@@ -4,7 +4,8 @@ import React from 'react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import Cargando from '@/components/loading';
-import Usuario from '../useIniciarSesion';
+import Usuario from "@/app/usuario/useIniciarSesion";
+import Head from 'next/head';
 
 const IniciarSesion = () => {
   const [username, setUsername] = useState('');
@@ -42,7 +43,11 @@ const IniciarSesion = () => {
 
   return (
     <>
-
+      <Head>
+        <title>U-Foto - Iniciar Sesión</title>
+        <meta name="description" content="Inicia sesión en U-Foto para acceder a tu cuenta y compartir tus fotos." />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="flex h-screen p-4">
         <div className="hidden md:block md:w-1/2">
           <img src="/img/tronco.jpg" alt="Imagen de tronco" className="w-full h-full object-cover" />
