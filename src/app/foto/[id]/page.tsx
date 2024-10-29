@@ -22,32 +22,34 @@ const FotoPage = ({ params }: FotoPageProps) => {
   const { id } = params;
   const [foto, setFoto] = useState<Foto | null>(null);
   const [fotoID, setFotoID] = useState<Foto | null>(null);
-
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [comentario, setComentario] = useState<string>("");
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [editandoComentarioId, setEditandoComentarioId] = useState<number | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Nuevo estado para autenticación
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('user_id');
-    setUserId(storedUserId);
     const token = localStorage.getItem('token');
+    setUserId(storedUserId);
+    setIsAuthenticated(!!token); // Set isAuthenticated según el token
 
     const cargarFoto = async () => {
       try {
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Token ${token}` }), // Incluye token solo si existe
+        };
+  
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/foto/api/fotos/${id}/`, {
           cache: 'no-store',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-          },
+          headers,
         });
 
         const data: Foto = await res.json();
         setFoto(data);
       } catch (error) {
-
         toast.error('Error al obtener la foto.');
         console.error('Error al obtener la foto:', error);
       } finally {
@@ -59,19 +61,20 @@ const FotoPage = ({ params }: FotoPageProps) => {
   }, [id]);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || !isAuthenticated) return; // Si no hay id o no está autenticado, no cargar comentarios
 
     const idfoto = parseInt(id);
     if (!isNaN(idfoto)) {
       cargaComentarios(idfoto);
-      console.log(idfoto)
+      console.log(idfoto);
     } else {
       console.error('ID de la foto no es válido.');
     }
-  }, [id]);
+  }, [id, isAuthenticated]);
+
   const iniciarEdicion = (comentario: Comentario) => {
-    setComentario(comentario.texto_comentado); // Cargar el texto en el campo de comentario
-    setEditandoComentarioId(comentario.id);    // Guardar el ID del comentario que se está editando
+    setComentario(comentario.texto_comentado);
+    setEditandoComentarioId(comentario.id);
   };
 
   const enviarComentario = async () => {
@@ -107,27 +110,27 @@ const FotoPage = ({ params }: FotoPageProps) => {
   const cargaComentarios = async (idfoto: number) => {
     try {
       const result = await cargarComentarios(idfoto);
-      setComentarios(result)
+      setComentarios(result);
       console.log('Comentarios:', result);
     } catch (error) {
       console.error(error);
-      toast.error('Ocurrió un error al cargar los comentarios.')
+      toast.error('Ocurrió un error al cargar los comentarios.');
     }
   };
+
   const eliminaComentario = async (idComentario: number) => {
     try {
-      const result = await eliminarComentario(idComentario);
+      await eliminarComentario(idComentario);
       setEditandoComentarioId(null);
       const idfoto = parseInt(id);
       if (!isNaN(idfoto)) {
         await cargaComentarios(idfoto);
       }
-
     } catch (error) {
       console.error(error);
-      toast.error('Ocurrió un error al cargar los comentarios.')
+      toast.error('Ocurrió un error al eliminar el comentario.');
     }
-  }
+  };
 
   if (loading) {
     return <Cargando />;
@@ -144,7 +147,7 @@ const FotoPage = ({ params }: FotoPageProps) => {
         <meta name="description" content="Descripción de la página" />
       </Head>
 
-      <Navbar></Navbar>
+      <Navbar />
 
       <div className='mx-6 mt-4 p-2'>
         <div className="flex flex-row items-center">
@@ -187,78 +190,55 @@ const FotoPage = ({ params }: FotoPageProps) => {
               <p>{foto.description}</p>
             </div>
 
-            {/*Comentarios*/}
             <div className='mt-4'>
               <div className='font-bold text-lg'>
                 <h2>Comentarios</h2>
               </div>
-              <div className='flex items-center rounded py-2'>
-                <input
-                  type="text"
-                  placeholder='¿Qué opinas de la foto?'
-                  value={comentario}
-                  onChange={(e) => setComentario(e.target.value)}
-                  className='flex-grow border border-gray-300 rounded-lg py-2 focus:outline-none focus:ring-1 focus:ring-blue-500'
-                />
-                <button
-                  onClick={enviarComentario}
-                  className='ml-2 border-lg rounded-lg p-2 hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-                >
-                  Comentar
-                </button>
-              </div>
 
-              <div className="space-y-4">
-                {comentarios.map((comentario) => {
-                  const userIdFromLocalStorage = localStorage.getItem('user_id');
-                  const isOwner = userIdFromLocalStorage === String(comentario.user);
-
-                  return (
-                    <div
-                      key={comentario.id}
-                      className="p-4 border border-gray-300 rounded-lg shadow-sm bg-white"
+              {isAuthenticated ? (
+                <>
+                  <div className='flex items-center rounded py-2'>
+                    <input
+                      type="text"
+                      placeholder='¿Qué opinas de la foto?'
+                      value={comentario}
+                      onChange={(e) => setComentario(e.target.value)}
+                      className='flex-grow border border-gray-300 rounded-lg py-2 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                    />
+                    <button
+                      onClick={enviarComentario}
+                      className='ml-2 border-lg rounded-lg p-2 hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
                     >
-                      <div className="flex items-center mb-2">
-                        <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
-                          {/* Esto es un placeholder para la imagen de perfil */}
-                          <span className="text-xl font-semibold text-gray-700">
-                            {comentario.nombre_usuario.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
+                      Comentar
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {comentarios.map((comentario) => (
+                      <div key={comentario.id} className="p-4 border border-gray-300 rounded-lg shadow-sm bg-white">
+                        <div className="flex items-center mb-2">
+                          <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
+                            <span className="text-xl font-semibold text-gray-700">
+                              {comentario.nombre_usuario.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
                           <h3 className="text-[1rem] font-bold text-gray-900">
                             {comentario.nombre_usuario}
                           </h3>
-
-                          {isOwner && (
-                            <div className="flex ml-auto">
-                              {/* Condicional para mostrar el botón "Editar" solo si el usuario es el autor del comentario */}
-                              <button
-                                onClick={() => iniciarEdicion(comentario)}  // Iniciar el proceso de edición
-                                className="text-blue-500 text-sm px-2"
-                              >
-                                <i className="ri-edit-2-line"></i>
-                              </button>
-                              <button
-                                onClick={() => eliminaComentario(comentario.id)}
-                                className="text-red-500 text-sm px-2"
-                              >
-                                <i className="ri-delete-bin-6-line"></i>
-                              </button>
-                            </div>
-                          )}
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <p className="text-gray-700 text-sm">{comentario.texto_comentado}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(comentario.creacion).toLocaleDateString()}
+                          </p>
                         </div>
                       </div>
-                      <div className="flex justify-between items-end">
-                        <p className="text-gray-700 text-sm">{comentario.texto_comentado}</p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(comentario.creacion).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="text-center text-gray-500 mt-4">Inicia sesión para ver y hacer comentarios.</p>
+              )}
             </div>
           </div>
         </div>
