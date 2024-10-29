@@ -52,7 +52,7 @@ const PageFoto = () => {
         try {
             setLoading(true);
 
-            const response = await axios.post("http://localhost:8000/foto/api/fotos/", formData, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}foto/api/fotos/`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     "Authorization": `Token ${localStorage.getItem("token")}`
